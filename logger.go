@@ -1,7 +1,11 @@
 package agave
 
 import (
-	hpfeeds "github.com/d1str0/go-hpfeeds"
+	"fmt"
+	"sync"
+	"time"
+
+	"github.com/d1str0/hpfeeds"
 )
 
 type HpfeedsWriter struct {
@@ -9,7 +13,7 @@ type HpfeedsWriter struct {
 	publish     chan []byte
 	channelName string
 	currentErr  error
-	errLock     RWMutex
+	errLock     sync.RWMutex
 }
 
 func NewHpfeedsWriter(host string, port int, ident string, auth string, channel string) (*HpfeedsWriter, error) {
@@ -17,36 +21,35 @@ func NewHpfeedsWriter(host string, port int, ident string, auth string, channel 
 	c := hpfeeds.NewClient(host, port, ident, auth)
 	err := c.Connect()
 	if err != nil {
-		return nil, error
+		return nil, err
 	}
 
 	c.Publish(channel, p)
 
-	w := HpfeedsWriter{client: c, publish: p, channelName: channel}
+	w := &HpfeedsWriter{client: c, publish: p, channelName: channel}
 
 	go func() {
 		for {
-			<-client.Disconnected
+			<-w.client.Disconnected
 			fmt.Printf("Attempting to reconnect...\n")
-			err = client.Connect()
+			err = w.client.Connect()
 			if err != nil {
 				fmt.Printf("Error reconnecting: %s\n", err.Error())
 				w.errLock.Lock()
 				w.currentErr = err
 				w.errLock.Unlock()
-				recon = time.After(5 * time.Second)
-				<-recon
+				time.Sleep(5 * time.Second)
 			}
 		}
 	}()
 
-	return w
+	return w, nil
 }
 
 func (w HpfeedsWriter) Write(p []byte) (n int, err error) {
 	w.publish <- p
 	w.errLock.RLock()
-	err := w.currentErr
+	err = w.currentErr
 	w.errLock.RUnlock()
 
 	return len(p), err
