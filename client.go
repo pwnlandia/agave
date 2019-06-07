@@ -148,11 +148,3 @@ type RequestJson struct {
 	Host             string
 	PostForm         url.Values
 }
-
-// getHost tries its best to return the request host.
-func getHost(r *http.Request) string {
-	r.URL.Scheme = "http"
-	r.URL.Host = r.Host
-
-	return r.URL.String()
-}
