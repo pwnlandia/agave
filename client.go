@@ -9,6 +9,8 @@ import (
 	"sync"
 )
 
+const Version = "v0.0.1"
+
 type Client struct {
 	App         string
 	Channel     string
@@ -21,31 +23,33 @@ type Client struct {
 
 // HTTPAttack normalizes the recieved request and allows for easy marshaling into JSON.
 type HTTPAttack struct {
-	Protocol   string
-	App        string
-	Channel    string
-	SensorGUID string `json:"sensor"`
-	DestPort   int
-	DestIp     string
-	SrcPort    int
-	SrcIp      string
-	Signature  string
-	PrevSeen   bool // True if we've seen this before
-	Request    *RequestJson
+	Protocol      string
+	App           string
+	Channel       string
+	SensorGUID    string `json:"sensor"`
+	DestPort      int
+	DestIp        string
+	SrcPort       int
+	SrcIp         string
+	Signature     string
+	PrevSeen      bool // True if we've seen this before
+	Request       *RequestJson
+	ClientVersion string `json:"agave_client_version"`
 }
 
 // CredentialAttack normalizes the recieved request and allows for easy marshaling into JSON.
 type CredentialAttack struct {
-	Protocol   string
-	App        string
-	Channel    string
-	SensorGUID string `json:"sensor"`
-	DestPort   int
-	DestIp     string
-	SrcPort    int
-	SrcIp      string
-	Username   string `json:"agave_username"`
-	Password   string `json:"agave_password"`
+	Protocol      string
+	App           string
+	Channel       string
+	SensorGUID    string `json:"sensor"`
+	DestPort      int
+	DestIp        string
+	SrcPort       int
+	SrcIp         string
+	Username      string `json:"agave_username"`
+	Password      string `json:"agave_password"`
+	ClientVersion string `json:"agave_client_version"`
 }
 
 func NewClient(app string, channel string, guid string, ip string, port int) *Client {
@@ -66,16 +70,17 @@ func (c *Client) NewHTTPAttack(signature string, r *http.Request) (*HTTPAttack, 
 	rj := TrimRequest(r)
 
 	return &HTTPAttack{
-		Protocol:   r.Proto,
-		App:        c.App,
-		Channel:    c.Channel,
-		SensorGUID: c.SensorGUID,
-		DestPort:   c.SensorPort,
-		DestIp:     c.SensorIp,
-		SrcPort:    port,
-		SrcIp:      ip,
-		PrevSeen:   c.SeenIP(ip),
-		Request:    rj,
+		Protocol:      r.Proto,
+		App:           c.App,
+		Channel:       c.Channel,
+		SensorGUID:    c.SensorGUID,
+		DestPort:      c.SensorPort,
+		DestIp:        c.SensorIp,
+		SrcPort:       port,
+		SrcIp:         ip,
+		PrevSeen:      c.SeenIP(ip),
+		Request:       rj,
+		ClientVersion: Version,
 	}, nil
 }
 
@@ -91,16 +96,17 @@ func (c *Client) NewCredentialAttack(r *http.Request, username string, password 
 	}
 
 	return &CredentialAttack{
-		Protocol:   r.Proto,
-		App:        c.App,
-		Channel:    c.Channel,
-		SensorGUID: c.SensorGUID,
-		DestPort:   c.SensorPort,
-		DestIp:     c.SensorIp,
-		SrcPort:    port,
-		SrcIp:      ip,
-		Username:   username,
-		Password:   password,
+		Protocol:      r.Proto,
+		App:           c.App,
+		Channel:       c.Channel,
+		SensorGUID:    c.SensorGUID,
+		DestPort:      c.SensorPort,
+		DestIp:        c.SensorIp,
+		SrcPort:       port,
+		SrcIp:         ip,
+		Username:      username,
+		Password:      password,
+		ClientVersion: Version,
 	}, nil
 }
 
