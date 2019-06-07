@@ -25,6 +25,7 @@ type Client struct {
 type HTTPAttack struct {
 	Protocol      string
 	App           string
+	AgaveApp      string
 	Channel       string
 	SensorGUID    string `json:"sensor"`
 	DestPort      int
@@ -41,6 +42,7 @@ type HTTPAttack struct {
 type CredentialAttack struct {
 	Protocol      string
 	App           string
+	AgaveApp      string
 	Channel       string
 	SensorGUID    string `json:"sensor"`
 	DestPort      int
@@ -71,7 +73,8 @@ func (c *Client) NewHTTPAttack(signature string, r *http.Request) (*HTTPAttack, 
 
 	return &HTTPAttack{
 		Protocol:      r.Proto,
-		App:           c.App,
+		App:           "agave",
+		AgaveApp:      c.App,
 		Channel:       c.Channel,
 		SensorGUID:    c.SensorGUID,
 		DestPort:      c.SensorPort,
@@ -97,7 +100,8 @@ func (c *Client) NewCredentialAttack(r *http.Request, username string, password 
 
 	return &CredentialAttack{
 		Protocol:      r.Proto,
-		App:           c.App,
+		App:           "agave",
+		AgaveApp:      c.App,
 		Channel:       c.Channel,
 		SensorGUID:    c.SensorGUID,
 		DestPort:      c.SensorPort,
