@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-const Version = "v0.1.1"
+const Version = "v0.1.2"
 
 type Client struct {
 	App         string
@@ -23,32 +23,32 @@ type Client struct {
 
 // HTTPAttack normalizes the recieved request and allows for easy marshaling into JSON.
 type HTTPAttack struct {
-	Protocol      string
-	App           string
-	AgaveApp      string
-	Channel       string
-	SensorGUID    string `json:"sensor"`
-	DestPort      int
-	DestIp        string
-	SrcPort       int
-	SrcIp         string
-	Signature     string
-	PrevSeen      bool // True if we've seen this before
-	Request       *RequestJson
-	ClientVersion string `json:"agave_client_version"`
+	Protocol      string       `json:"protocol"`
+	App           string       `json:"app"`
+	AgaveApp      string       `json:"agave_app"`
+	Channel       string       `json:"channel"`
+	SensorGUID    string       `json:"sensor"`
+	DestPort      int          `json:"dest_port"`
+	DestIp        string       `json:"dest_ip"`
+	SrcPort       int          `json:"src_port"`
+	SrcIp         string       `json:"src_ip"`
+	Signature     string       `json:"signature"`
+	PrevSeen      bool         `json:"prev_seen"`
+	Request       *RequestJson `json:"request_json"`
+	ClientVersion string       `json:"agave_client_version"`
 }
 
 // CredentialAttack normalizes the recieved request and allows for easy marshaling into JSON.
 type CredentialAttack struct {
-	Protocol      string
-	App           string
-	AgaveApp      string
-	Channel       string
+	Protocol      string `json:"protocol"`
+	App           string `json:"app"`
+	AgaveApp      string `json:"agave_app"`
+	Channel       string `json:"channel"`
 	SensorGUID    string `json:"sensor"`
-	DestPort      int
-	DestIp        string
-	SrcPort       int
-	SrcIp         string
+	DestPort      int    `json:"dest_port"`
+	DestIp        string `json:"dest_ip"`
+	SrcPort       int    `json:"src_port"`
+	SrcIp         string `json:"src_ip"`
 	Username      string `json:"agave_username"`
 	Password      string `json:"agave_password"`
 	ClientVersion string `json:"agave_client_version"`
